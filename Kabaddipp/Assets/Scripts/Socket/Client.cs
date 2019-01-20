@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WebSocketSharp;
+using UnityEngine.XR;
 
 public class Client : MonoBehaviour
 {
-
-    [SerializeField] private string _serverAddress;
-    [SerializeField] private int _port;
 
     private WebCamController webCamController;
     private WebSocket ws;
@@ -16,6 +14,12 @@ public class Client : MonoBehaviour
 
     private void Awake()
     {
+        if (IPShare.port == 0)
+        {
+            XRSettings.enabled = false;
+            SceneManager.LoadScene("SettingScene");
+        }
+
         if (webCamController == null)
         {
             webCamController = WebCamController.GetInstance();
@@ -23,8 +27,7 @@ public class Client : MonoBehaviour
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        string ca = "ws://" + _serverAddress + ":" + _port.ToString();
-        InitWebSocket(ca);
+        InitWebSocket(IPShare.getURL());
     }
 
     public void OnDestroy()
