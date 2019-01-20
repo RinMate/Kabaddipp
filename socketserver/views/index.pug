@@ -1,0 +1,57 @@
+extends layout
+
+block variables
+  -
+    const skills = [
+      {
+        name: '左右反転',
+        value: {
+          skill: 1,
+          time: 3,
+          data: '',
+        },
+      },
+      {
+        name: '上下反転',
+        value: {
+          skill: 2,
+          time: 3,
+          data: '',
+        },
+      },
+      {
+        name: '上下左右反転',
+        value: {
+          skill: 3,
+          time: 2,
+          data: '',
+        },
+      },
+      {
+        name: 'グレースケール',
+        value: {
+          skill: 4,
+          time: 3,
+          data: '',
+        },
+      },
+      {
+        name: 'ネガトーン',
+        value: {
+          skill: 5,
+          time: 3,
+          data: '',
+        },
+      }
+    ]
+
+block content
+  main
+    h1 アンティのスキル
+    .skills
+      - for (let i = 0; i < skills.length; i++) {
+        .skill(
+          onClick=`sendSkill('${JSON.stringify(skills[i].value)}')`
+        )= skills[i].name
+      - }
+

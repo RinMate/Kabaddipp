@@ -1,0 +1,20 @@
+﻿<Properties StartupConfiguration="{30D07543-FE72-DEFA-4044-9574E2209A23}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Common/IPShare.cs">
+    <Files>
+      <File FileName="Assets/Scripts/Common/SkillData.cs" Line="7" Column="23" />
+      <File FileName="Assets/Scripts/Common/JsonSkillConverter.cs" Line="7" Column="54" />
+      <File FileName="Assets/Scripts/Device/WebCamController.cs" Line="74" Column="10" />
+      <File FileName="Assets/Scripts/Socket/Client.cs" Line="9" Column="20" />
+      <File FileName="Assets/Scripts/Device/MoveSetting.cs" Line="3" Column="19" />
+      <File FileName="Assets/Scripts/Setting/Setting.cs" Line="25" Column="6" />
+      <File FileName="Assets/Scripts/Common/IPShare.cs" Line="1" Column="14" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

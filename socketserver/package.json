@@ -1,0 +1,14 @@
+{
+  "name": "kabaddi",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-ws": "^2.0.0",
+    "pug": "^2.0.3"
+  },
+  "scripts": {
+    "start": "node src/app"
+  }
+}
