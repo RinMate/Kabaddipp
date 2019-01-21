@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using WebSocketSharp;
 using UnityEngine;
 using UnityEngine.UI;
+using MiniJSON;
 
 public class EventManager : MonoBehaviour
 {
@@ -18,14 +19,9 @@ public class EventManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
 	{
-		if (webCamController == null)
-		{
-			webCamController = WebCamController.GetInstance();
-		}
-
 		if_ip.onValueChanged.AddListener(TextValueCheck);
 		if_port.onValueChanged.AddListener(TextValueCheck);
-		btnConnect.onClick.AddListener(OnConnect);
+		btnConnect.onClick.AddListener(onConnect);
 		btnStart.onClick.AddListener(beginSend);
 	}
 
@@ -41,9 +37,10 @@ public class EventManager : MonoBehaviour
 		}
 	}
 
-	void OnConnect()
-	{
-		string url = "ws://" + if_ip.text + ":" + if_port.text;
+	void onConnect()
+    {
+        btnConnect.interactable = false;
+        string url = "ws://" + if_ip.text + ":" + if_port.text;
 		InitWebSocket (url);
 	}
 
@@ -82,8 +79,9 @@ public class EventManager : MonoBehaviour
 	}
 
 	void InitWebSocket(string url)
-	{
-		ws = new WebSocket(url);
+    {
+        Debug.Log("Try to connect on " + url);
+        ws = new WebSocket(url);
 
 		//Add Events
 		ws.OnOpen += (object sender, System.EventArgs e) => {
@@ -95,7 +93,25 @@ public class EventManager : MonoBehaviour
 
 		//On catch message event
 		ws.OnMessage += (object sender, MessageEventArgs e) => {
-			Debug.Log(e.Data);
+            if (webCamController == null)
+            {
+                webCamController = WebCamController.GetInstance();
+            }
+
+            Debug.Log(e.Data);
+            var json = Json.Deserialize(e.Data) as Dictionary<string, object>;
+            switch ((string)json["type"])
+            {
+                case "webcam_init":
+                    webCamController.width = (int)json["width"];
+                    webCamController.height = (int)json["height"];
+                    webCamController.status = WebCamController.Status.Sync;
+                    webCamController.StartCapture();
+                    break;
+                case "webcam_stop":
+                    webCamController.status = WebCamController.Status.Idling;
+                    break;
+            }
 		};
 
 		//On error event

@@ -6,7 +6,7 @@ public class WebCamController : MonoBehaviour
 {
     public int width = 960;
     public int height = 540;
-    public int fps = 60;
+    public int fps = 30;
 
 	public Status status = Status.Idling;
 
@@ -53,12 +53,6 @@ public class WebCamController : MonoBehaviour
         {
             _singleInstance = this;
         }
-
-        WebCamDevice[] devices = WebCamTexture.devices;
-        webcamTexture = new WebCamTexture(devices[0].name, this.width, this.height, this.fps);
-        webcamTexture.Play();
-
-        StartCoroutine(Init());
     }
 
     // Update is called once per frame
@@ -70,6 +64,18 @@ public class WebCamController : MonoBehaviour
             {
                 webcamTexture.GetPixels32(colors);
             }
+        }
+    }
+
+    public void StartCapture()
+    {
+        if (webcamTexture == null)
+        {
+            WebCamDevice[] devices = WebCamTexture.devices;
+            webcamTexture = new WebCamTexture(devices[0].name, this.width, this.height, this.fps);
+            webcamTexture.Play();
+
+            StartCoroutine(Init());
         }
     }
 }
