@@ -10,13 +10,13 @@ public class Client : MonoBehaviour
 
     private WebCamController webCamController;
     private WebSocket ws;
-    private bool connected = false;
+    private bool streaming = false;
 
     private void Awake()
     {
         if (IPShare.port == 0)
         {
-            XRSettings.enabled = false;
+            //XRSettings.enabled = false;
             SceneManager.LoadScene("SettingScene");
         }
 
@@ -37,7 +37,7 @@ public class Client : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainScene" && connected == false)
+        if (scene.name == "MainScene")
         {
             InitWebSocket(IPShare.getURL());
         }
@@ -50,21 +50,45 @@ public class Client : MonoBehaviour
         //Add Events
         ws.OnOpen += (object sender, System.EventArgs e) => {
             Debug.Log("Connect to " + url);
-            connected = true;
+            if (webCamController == null)
+            {
+                webCamController = WebCamController.GetInstance();
+            }
+            string regist_str = "{\"type\":\"register\",\"device\":\"hmd\"}";
+            ws.Send(regist_str);
         };
 
         //On catch message event
         ws.OnMessage += (object sender, MessageEventArgs e) => {
             Debug.Log(e.Data);
-            SkillDataJSON skillDataJSON = JsonUtility.FromJson<SkillDataJSON>(e.Data);
-            if (skillDataJSON != null && skillDataJSON.type == "skill")
+            if (webCamController == null)
             {
-                SkillData skillData = skillDataJSON.data;
-                if (webCamController == null)
+                webCamController = WebCamController.GetInstance();
+            }
+            if (streaming)
+            {
+                WebCamJSON webCamJSON = JsonUtility.FromJson<WebCamJSON>(e.Data);
+                if (webCamController.webcamColors == null)
                 {
-                    webCamController = WebCamController.GetInstance();
+                    webCamController.webcamColors = new Color32[webCamJSON.data.Length];
                 }
-                webCamController.skillData = skillData;
+            }
+            else
+            {
+                SkillDataJSON skillDataJSON = JsonUtility.FromJson<SkillDataJSON>(e.Data);
+                if (skillDataJSON != null && skillDataJSON.type == "skill")
+                {
+                    SkillData skillData = skillDataJSON.data;
+                    webCamController.skillData = skillData;
+                    if (skillData.skill == Skills.Fix_Camera)
+                    {
+                        streaming = true; 
+                        string webcam_init_str = "{\"type\":\"webcam_init\"," +
+                                            "\"width\":" + webCamController.webcamTexture.width +
+                                            "\"height\":" + webCamController.webcamTexture.height + "}";
+                        ws.Send(webcam_init_str);
+                    }
+                }
             }
         };
 
@@ -76,7 +100,6 @@ public class Client : MonoBehaviour
         //On WebSocket close event
         ws.OnClose += (sender, e) => {
             Debug.Log("Disconnected Server");
-            connected = false;
         };
 
         ws.Connect();

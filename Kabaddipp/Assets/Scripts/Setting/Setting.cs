@@ -19,15 +19,13 @@ public class Setting : MonoBehaviour
         if_ip4.onValueChanged.AddListener(TextValueCheck);
         if_port.onValueChanged.AddListener(TextValueCheck);
         buttonOK.onClick.AddListener(MoveMainScene);
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void MoveMainScene()
     {
         IPShare.address = if_ip1.text + '.' + if_ip2.text + '.' + if_ip3.text + '.' + if_ip4.text;
         IPShare.port = int.Parse(if_port.text);
-        XRSettings.enabled = true;
+        //XRSettings.enabled = true;
         SceneManager.LoadScene("MainScene");
     }
 
@@ -44,13 +42,4 @@ public class Setting : MonoBehaviour
             buttonOK.interactable = false;
         }
     }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.name == "SettingScene")
-        {
-            XRSettings.enabled = false;
-        }
-    }
-
 }

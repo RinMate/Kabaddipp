@@ -6,6 +6,10 @@ const os = require('os')
 const port = process.env.PORT || 3000
 
 let connects = [];
+let hmd_connect;
+let hmd_width = -1;
+let hmd_height = -1;
+let wc_connect;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -32,9 +36,50 @@ app.ws('/', (ws, req) => {
           'type': 'skill',
           'data': obj.data
         })
-        connects.forEach(socket => {
+        if(!hmd_connect){
+          hmd_connect.send(str);
+        }
+        if(!wc_connect){
+          wc_connect.send(str);
+        }
+        /*connects.forEach(socket => {
           socket.send(str);
-        });
+        });*/
+        break;
+      case "register":
+        if(obj.device === 'hmd'){
+          hmd_connect = ws;
+          console.log('HMD set');
+        }else if(obj.device === 'webcam'){
+          wc_connect = ws;
+          console.log('WebCam set');
+          if(!hmd_connect){
+            str = JSON.stringify({
+              'type': 'register',
+              'data': 'webcam'
+            })
+            hmd_connect.send(str);
+          }
+        }
+        break;
+      case "webcam":
+        if(!hmd_connect){
+          str = JSON.stringify({
+            'type': 'webcam',
+            'data': obj.data
+          })
+          hmd_connect.send(str);
+        }
+        break;
+      case 'webcam_init':
+        if(!wc_connect){
+          str = JSON.stringify({
+            'type': 'webcam_init',
+            'width': obj.width,
+            'height': obj.height
+          })
+          wc_connect.send(str);          
+        }
         break;
       default:
         break;

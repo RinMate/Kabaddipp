@@ -394,7 +394,7 @@ PlayerSettings:
     - Oculus
     - OpenVR
   - m_BuildTarget: iOS
-    m_Enabled: 1
+    m_Enabled: 0
     m_Devices:
     - cardboard
   m_BuildTargetEnableVuforiaSettings: []

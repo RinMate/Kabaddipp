@@ -7,12 +7,18 @@ public class WebCamController : MonoBehaviour
     public int width = 1920;
     public int height = 1080;
     public int fps = 60;
+
+    public GameObject leftScreen;
+    public GameObject rightScreen;
+
     public SkillData skillData;
+    public Color32[] webcamColors = null;
+
 
     private static WebCamController _singleInstance;
 
     private Texture2D texture;
-    private WebCamTexture webcamTexture;
+    public WebCamTexture webcamTexture;
     private Color32[] colors = null;
     private Skills prevSkill;
 
@@ -24,7 +30,9 @@ public class WebCamController : MonoBehaviour
             {
                 colors = new Color32[webcamTexture.width * webcamTexture.height];
                 texture = new Texture2D(webcamTexture.width, webcamTexture.height, TextureFormat.RGBA32, false);
-                GetComponent<Renderer>().material.mainTexture = texture;
+                //GetComponent<Renderer>().material.mainTexture = texture;
+                leftScreen.GetComponent<Renderer>().material.mainTexture = texture;
+                rightScreen.GetComponent<Renderer>().material.mainTexture = texture;
                 break;
             }
             yield return null;
@@ -37,6 +45,8 @@ public class WebCamController : MonoBehaviour
         {
             _singleInstance = this;
         }
+
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     public static WebCamController GetInstance()
